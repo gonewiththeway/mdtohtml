@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar__header">
+          <p class="eyebrow">Markdown Viewer</p>
+          <h1>Documents</h1>
+          <p class="sidebar__intro">
+            Pick a markdown file, then use the generated table of contents to jump to sections.
+          </p>
+        </div>
+
+        <section class="sidebar__section">
+          <h2>Files</h2>
+          <div class="upload-panel">
+            <label class="upload-button" for="markdown-upload">Upload markdown file</label>
+            <input id="markdown-upload" type="file" accept=".md,text/markdown" />
+            <p class="muted upload-help">Loaded in the browser only. Nothing is written back to the server.</p>
+          </div>
+          <nav id="document-list" class="document-list" aria-label="Markdown files"></nav>
+        </section>
+
+        <section class="sidebar__section sidebar__section--toc">
+          <div class="toc-header">
+            <h2>Table of Contents</h2>
+            <p id="current-document-label" class="muted">No document loaded</p>
+          </div>
+          <nav id="toc" class="toc" aria-label="Table of contents">
+            <p class="empty-state">Load a markdown file to generate its headings here.</p>
+          </nav>
+        </section>
+      </aside>
+
+      <main class="content-panel">
+        <div class="content-panel__header">
+          <p class="eyebrow">Preview</p>
+          <h2 id="document-title">Select a markdown file</h2>
+        </div>
+        <article id="content" class="markdown-body">
+          <div class="empty-content">
+            Choose one of the links in the left panel to load and render markdown.
+          </div>
+        </article>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
