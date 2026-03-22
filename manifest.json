@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "MD to HTML",
+  "version": "1.0.0",
+  "description": "Private markdown viewer. Files stay local. No tracking, no sync, no cloud upload.",
+  "action": {
+    "default_title": "Open MD to HTML"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "docs/*.md",
+        "vendor/*.js",
+        "styles.css",
+        "app.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

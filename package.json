@@ -1,0 +1,16 @@
+{
+  "name": "md-to-html",
+  "version": "1.0.0",
+  "description": "Private markdown-to-HTML viewer Chrome extension by Atul Purohit.",
+  "author": "Atul Purohit <gonewiththeway@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "serve": "node server.js",
+    "package-extension": "mkdir -p dist && zip -rq dist/md-to-html-extension.zip manifest.json background.js index.html app.js styles.css docs vendor README.md"
+  },
+  "dependencies": {
+    "dompurify": "^3.3.3",
+    "marked": "^17.0.5"
+  }
+}

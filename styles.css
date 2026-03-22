@@ -22,7 +22,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(244, 185, 102, 0.18), transparent 28%),
@@ -59,7 +59,7 @@ body {
 .sidebar__header h1,
 .content-panel__header h2 {
   margin: 0;
-  font-family: "Fraunces", serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
   line-height: 1.05;
 }
@@ -237,7 +237,7 @@ body {
 .markdown-body h5,
 .markdown-body h6 {
   scroll-margin-top: 24px;
-  font-family: "Fraunces", serif;
+  font-family: Georgia, "Times New Roman", serif;
   line-height: 1.15;
   margin-top: 2.2em;
   margin-bottom: 0.5em;
@@ -301,7 +301,7 @@ body {
 }
 
 .markdown-body code {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.92em;
   background: rgba(69, 51, 27, 0.08);
   padding: 0.14em 0.35em;
