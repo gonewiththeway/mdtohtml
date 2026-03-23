@@ -1,15 +1,23 @@
-const documents = [
+const defaultDocuments = [
   { title: "Project Overview", path: "./docs/overview.md" },
   { title: "Getting Started", path: "./docs/getting-started.md" },
 ];
 
+/** After publishing, set your listing review URL (Chrome Web Store item ID in the URL). */
+const CHROME_STORE_REVIEW_URL =
+  "https://chromewebstore.google.com/detail/markdown-viewer/YOUR_EXTENSION_ID/reviews";
+
+const welcomeScreen = document.getElementById("welcome-screen");
+const appShell = document.getElementById("app-shell");
 const documentList = document.getElementById("document-list");
 const tocContainer = document.getElementById("toc");
 const contentContainer = document.getElementById("content");
 const documentTitle = document.getElementById("document-title");
 const currentDocumentLabel = document.getElementById("current-document-label");
-const markdownUpload = document.getElementById("markdown-upload");
-const defaultDocuments = [...documents];
+const markdownUploadWelcome = document.getElementById("markdown-upload");
+const markdownUploadSidebar = document.getElementById("markdown-upload-sidebar");
+const dropZone = document.getElementById("drop-zone");
+const rateLink = document.getElementById("rate-link");
 
 marked.setOptions({
   gfm: true,
@@ -18,66 +26,70 @@ marked.setOptions({
   mangle: false,
 });
 
-function renderDocumentLinks() {
-  documentList.innerHTML = "";
-
-  documents.forEach((doc, index) => {
-    const link = document.createElement("a");
-    link.className = "nav-link";
-    link.href = `?doc=${encodeURIComponent(doc.path)}`;
-    link.dataset.path = doc.path;
-    link.textContent = doc.title;
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      loadMarkdownDocument(doc);
-      updateUrl(doc.path);
-    });
-
-    if (index === 0) {
-      link.classList.add("is-active");
-    }
-
-    documentList.appendChild(link);
-  });
+function showViewer() {
+  welcomeScreen.classList.add("welcome--hidden");
+  welcomeScreen.setAttribute("aria-hidden", "true");
+  appShell.classList.remove("app-shell--hidden");
+  appShell.setAttribute("aria-hidden", "false");
 }
 
-function renderUploadedDocumentLink(fileName) {
-  documentList.innerHTML = "";
+function isMarkdownFile(file) {
+  if (!file) {
+    return false;
+  }
+  const name = file.name.toLowerCase();
+  return (
+    name.endsWith(".md") ||
+    name.endsWith(".markdown") ||
+    file.type === "text/markdown" ||
+    file.type === "text/x-markdown"
+  );
+}
 
+function makeDocNavLink(title, path) {
   const link = document.createElement("a");
-  link.className = "nav-link is-active";
-  link.href = "#";
-  link.textContent = fileName;
-  link.setAttribute("aria-current", "true");
-  documentList.appendChild(link);
+  link.className = "nav-link";
+  link.textContent = title;
+  if (path) {
+    link.href = `?doc=${encodeURIComponent(path)}`;
+    link.dataset.path = path;
+  } else {
+    link.href = "#";
+  }
+  return link;
 }
 
-function restoreDefaultDocumentLinks(activePath) {
+function renderDefaultDocLinks(activePath) {
   documentList.innerHTML = "";
-
   defaultDocuments.forEach((doc) => {
-    const link = document.createElement("a");
-    link.className = "nav-link";
-    link.href = `?doc=${encodeURIComponent(doc.path)}`;
-    link.dataset.path = doc.path;
-    link.textContent = doc.title;
+    const link = makeDocNavLink(doc.title, doc.path);
     link.addEventListener("click", (event) => {
       event.preventDefault();
       loadMarkdownDocument(doc);
       updateUrl(doc.path);
     });
-
     if (doc.path === activePath) {
       link.classList.add("is-active");
     }
-
     documentList.appendChild(link);
   });
+}
+
+function renderUploadedDocLink(fileName) {
+  documentList.innerHTML = "";
+  const link = makeDocNavLink(fileName, null);
+  link.classList.add("is-active");
+  link.setAttribute("aria-current", "page");
+  documentList.appendChild(link);
 }
 
 function updateUrl(docPath, headingId = "") {
   const url = new URL(window.location.href);
-  url.searchParams.set("doc", docPath);
+  if (docPath) {
+    url.searchParams.set("doc", docPath);
+  } else {
+    url.searchParams.delete("doc");
+  }
   url.hash = headingId ? `#${headingId}` : "";
   history.replaceState(null, "", url);
 }
@@ -133,18 +145,6 @@ function renderToc(container) {
   });
 }
 
-function setActiveDocument(path) {
-  document.querySelectorAll("#document-list .nav-link").forEach((link) => {
-    link.classList.toggle("is-active", link.dataset.path === path);
-  });
-}
-
-function clearActiveDocument() {
-  document.querySelectorAll("#document-list .nav-link").forEach((link) => {
-    link.classList.remove("is-active");
-  });
-}
-
 function renderMarkdown(markdown, title, docPath = "", syncUrl = true) {
   const rawHtml = marked.parse(markdown);
   const safeHtml = DOMPurify.sanitize(rawHtml);
@@ -158,7 +158,10 @@ function renderMarkdown(markdown, title, docPath = "", syncUrl = true) {
   if (syncUrl && docPath) {
     updateUrl(docPath);
   } else if (syncUrl && !docPath) {
-    history.replaceState(null, "", window.location.pathname);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("doc");
+    url.hash = "";
+    history.replaceState(null, "", url);
   }
 
   const hash = window.location.hash;
@@ -171,7 +174,7 @@ function renderMarkdown(markdown, title, docPath = "", syncUrl = true) {
 }
 
 async function loadMarkdownDocument(doc) {
-  restoreDefaultDocumentLinks(doc.path);
+  renderDefaultDocLinks(doc.path);
   contentContainer.innerHTML = '<div class="loading">Loading markdown...</div>';
 
   try {
@@ -195,14 +198,13 @@ async function loadMarkdownDocument(doc) {
   }
 }
 
-function handleMarkdownUpload(event) {
-  const [file] = event.target.files || [];
-
-  if (!file) {
+function readMarkdownFile(file) {
+  if (!isMarkdownFile(file)) {
     return;
   }
 
-  renderUploadedDocumentLink(file.name);
+  showViewer();
+  renderUploadedDocLink(file.name);
   contentContainer.innerHTML = '<div class="loading">Loading markdown...</div>';
 
   const reader = new FileReader();
@@ -220,26 +222,81 @@ function handleMarkdownUpload(event) {
       '<p class="empty-state">The table of contents could not be generated.</p>';
   };
   reader.readAsText(file);
-  event.target.value = "";
 }
 
-function getRequestedDocument() {
-  const params = new URLSearchParams(window.location.search);
-  const path = params.get("doc");
+function handleMarkdownUpload(event) {
+  const [file] = event.target.files || [];
+  event.target.value = "";
+  if (!file) {
+    return;
+  }
+  readMarkdownFile(file);
+}
 
-  if (path) {
-    return documents.find((doc) => doc.path === path);
+function getDocumentFromQuery() {
+  const path = new URLSearchParams(window.location.search).get("doc");
+  if (!path) {
+    return null;
+  }
+  return defaultDocuments.find((doc) => doc.path === path) ?? null;
+}
+
+function setupDropZone() {
+  if (!dropZone) {
+    return;
   }
 
-  return documents[0];
+  dropZone.addEventListener("dragenter", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("drop-zone--active");
+  });
+
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    dropZone.classList.add("drop-zone--active");
+  });
+
+  dropZone.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    if (!dropZone.contains(e.relatedTarget)) {
+      dropZone.classList.remove("drop-zone--active");
+    }
+  });
+
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("drop-zone--active");
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      readMarkdownFile(file);
+    }
+  });
+
+  dropZone.addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      markdownUploadWelcome.click();
+    }
+  });
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  renderDocumentLinks();
-  markdownUpload.addEventListener("change", handleMarkdownUpload);
+  if (rateLink) {
+    rateLink.href = CHROME_STORE_REVIEW_URL;
+    if (CHROME_STORE_REVIEW_URL.includes("YOUR_EXTENSION_ID")) {
+      rateLink.title =
+        "After publishing, replace YOUR_EXTENSION_ID in app.js with your Chrome Web Store item ID.";
+    }
+  }
 
-  const initialDocument = getRequestedDocument();
-  if (initialDocument) {
-    loadMarkdownDocument(initialDocument);
+  markdownUploadWelcome.addEventListener("change", handleMarkdownUpload);
+  markdownUploadSidebar.addEventListener("change", handleMarkdownUpload);
+  setupDropZone();
+
+  const fromQuery = getDocumentFromQuery();
+  if (fromQuery) {
+    showViewer();
+    loadMarkdownDocument(fromQuery);
   }
 });

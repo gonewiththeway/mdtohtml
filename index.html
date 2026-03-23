@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,16 +7,67 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <div id="welcome-screen" class="welcome" aria-label="Open a markdown file">
+      <div class="welcome__inner">
+        <h1 class="welcome__title">Markdown Viewer</h1>
+        <p class="welcome__lede">
+          Open a <code>.md</code> file. Everything stays in your browser.
+        </p>
+
+        <label
+          id="drop-zone"
+          class="drop-zone"
+          for="markdown-upload"
+          tabindex="0"
+          data-drop-zone
+        >
+          <input
+            id="markdown-upload"
+            type="file"
+            accept=".md,.markdown,text/markdown"
+          />
+          <span class="drop-zone__icon" aria-hidden="true">↓</span>
+          <span class="drop-zone__primary">Drop a markdown file here</span>
+          <span class="drop-zone__secondary">or click to choose a file</span>
+        </label>
+
+        <a
+          id="rate-link"
+          class="rate-link"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Rate on Chrome Web Store
+        </a>
+        <p class="welcome__privacy muted">
+          Nothing is uploaded or synced with our servers.
+        </p>
+      </div>
+    </div>
+
+    <div id="app-shell" class="app-shell app-shell--hidden" aria-hidden="true">
       <aside class="sidebar">
         <section class="sidebar__section">
           <h2>Files</h2>
-          <div class="upload-panel">
-            <label class="upload-button" for="markdown-upload">Upload markdown file</label>
-            <input id="markdown-upload" type="file" accept=".md,text/markdown" />
-            <p class="muted upload-help">Loaded in the browser only. Nothing is written back to the server.</p>
+          <div class="upload-panel upload-panel--compact">
+            <label class="upload-button" for="markdown-upload-sidebar"
+              >Upload another file</label
+            >
+            <input
+              id="markdown-upload-sidebar"
+              type="file"
+              accept=".md,.markdown,text/markdown"
+            />
+            <p class="muted upload-help">
+              Local only. Not saved to disk by this page.
+            </p>
           </div>
-          <nav id="document-list" class="document-list" aria-label="Markdown files"></nav>
+          <nav
+            id="document-list"
+            class="document-list"
+            aria-label="Markdown files"
+          ></nav>
         </section>
 
         <section class="sidebar__section sidebar__section--toc">
@@ -25,7 +76,9 @@
             <p id="current-document-label" class="muted">No document loaded</p>
           </div>
           <nav id="toc" class="toc" aria-label="Table of contents">
-            <p class="empty-state">Load a markdown file to generate its headings here.</p>
+            <p class="empty-state">
+              Load a markdown file to generate its headings here.
+            </p>
           </nav>
         </section>
       </aside>
@@ -37,7 +90,7 @@
         </div>
         <article id="content" class="markdown-body">
           <div class="empty-content">
-            Choose one of the links in the left panel to load and render markdown.
+            Choose a file from the left or upload one.
           </div>
         </article>
       </main>

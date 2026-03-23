@@ -1,4 +1,4 @@
-# MD to HTML
+# Markdown Viewer
 
 Created by Atul Purohit (<gonewiththeway@gmail.com>).
 
@@ -49,7 +49,7 @@ Create a zip package:
 npm run package-extension
 ```
 
-That produces `dist/md-to-html-extension.zip`.
+That produces `dist/markdown-viewer-extension.zip`.
 
 ## Repackage after changes
 
@@ -59,4 +59,4 @@ From `/Users/atulpurohit/workspace/personal/mdtohtml` run:
 npm run package-extension
 ```
 
-The updated extension zip will be written to `dist/md-to-html-extension.zip`.
+The updated extension zip will be written to `dist/markdown-viewer-extension.zip`.
