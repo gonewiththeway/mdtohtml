@@ -5,7 +5,7 @@ const defaultDocuments = [
 
 /** After publishing, set your listing review URL (Chrome Web Store item ID in the URL). */
 const CHROME_STORE_REVIEW_URL =
-  "https://chromewebstore.google.com/detail/markdown-viewer/YOUR_EXTENSION_ID/reviews";
+  "https://chromewebstore.google.com/detail/markdown-viewer/paaolbnodbjcpfeighohnkghbalopbkj/reviews";
 
 const welcomeScreen = document.getElementById("welcome-screen");
 const appShell = document.getElementById("app-shell");
@@ -15,7 +15,9 @@ const contentContainer = document.getElementById("content");
 const documentTitle = document.getElementById("document-title");
 const currentDocumentLabel = document.getElementById("current-document-label");
 const markdownUploadWelcome = document.getElementById("markdown-upload");
-const markdownUploadSidebar = document.getElementById("markdown-upload-sidebar");
+const markdownUploadSidebar = document.getElementById(
+  "markdown-upload-sidebar",
+);
 const dropZone = document.getElementById("drop-zone");
 const rateLink = document.getElementById("rate-link");
 
@@ -106,7 +108,8 @@ function ensureHeadingIds(container) {
   const seenIds = new Map();
 
   container.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((heading) => {
-    const baseId = heading.id || slugifyHeading(heading.textContent) || "section";
+    const baseId =
+      heading.id || slugifyHeading(heading.textContent) || "section";
     const count = seenIds.get(baseId) || 0;
     const nextId = count === 0 ? baseId : `${baseId}-${count + 1}`;
     seenIds.set(baseId, count + 1);
@@ -135,7 +138,9 @@ function renderToc(container) {
     link.addEventListener("click", (event) => {
       event.preventDefault();
       heading.scrollIntoView({ behavior: "smooth", block: "start" });
-      const activeDoc = document.querySelector("#document-list .nav-link.is-active")?.dataset.path;
+      const activeDoc = document.querySelector(
+        "#document-list .nav-link.is-active",
+      )?.dataset.path;
       if (activeDoc) {
         updateUrl(activeDoc, heading.id);
       }
@@ -284,7 +289,7 @@ function setupDropZone() {
 window.addEventListener("DOMContentLoaded", () => {
   if (rateLink) {
     rateLink.href = CHROME_STORE_REVIEW_URL;
-    if (CHROME_STORE_REVIEW_URL.includes("YOUR_EXTENSION_ID")) {
+    if (CHROME_STORE_REVIEW_URL.includes("paaolbnodbjcpfeighohnkghbalopbkj")) {
       rateLink.title =
         "After publishing, replace YOUR_EXTENSION_ID in app.js with your Chrome Web Store item ID.";
     }
