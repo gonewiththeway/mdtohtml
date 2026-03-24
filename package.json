@@ -1,6 +1,6 @@
 {
   "name": "markdown-viewer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Markdown Viewer — Chrome extension to preview local .md files with a table of contents. No cloud upload or tracking.",
   "author": "Atul Purohit <gonewiththeway@gmail.com>",
   "license": "MIT",

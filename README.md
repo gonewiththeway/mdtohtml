@@ -40,7 +40,7 @@ Load it in Chrome:
 1. Open `chrome://extensions`
 2. Turn on Developer mode
 3. Click Load unpacked
-4. Select `/Users/atulpurohit/workspace/personal/mdtohtml`
+4. Select `./workspace/personal/mdtohtml`
 5. Click the extension icon to open the viewer in a new tab
 
 Create a zip package:
@@ -53,7 +53,7 @@ That produces `dist/markdown-viewer-extension.zip`.
 
 ## Repackage after changes
 
-From `/Users/atulpurohit/workspace/personal/mdtohtml` run:
+From `./workspace/personal/mdtohtml` run:
 
 ```bash
 npm run package-extension

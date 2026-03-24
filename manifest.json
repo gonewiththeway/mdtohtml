@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Markdown Viewer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Preview markdown files in your browser. Opens local .md files with a table of contents—nothing is uploaded, synced, or tracked.",
   "icons": {
     "16": "icons/icon16.png",
@@ -23,15 +23,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "docs/*.md",
-        "vendor/*.js",
-        "styles.css",
-        "app.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "resources": ["docs/*.md", "vendor/*.js", "styles.css", "app.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
